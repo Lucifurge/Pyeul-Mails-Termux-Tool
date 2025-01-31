@@ -12,7 +12,7 @@ Write.Print(r"""
 █    █ █  █ █    █   █  █    █  ███ █  █   █   █   █    ██
 █████   █   ██   █   █  █    █      █  █████   █   █      ██
 █      █    ███   ███   ████ █      █  █   █  ███  ███  ████
-
+            Made by the husband of Pyeul lihm
 [1] Generate Mail
 [2] Exit
 """, Colors.blue_to_white, interval=0.0001)
