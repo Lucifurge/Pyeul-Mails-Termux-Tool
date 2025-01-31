@@ -1,7 +1,7 @@
 # Pyeul-Mails-Termux-Tool
 
 ## Overview
-This tool allows you to generate temporary email addresses and check for new messages using the Guerrilla Mail API. It is designed to work seamlessly with Termux on Android devices.
+This tool allows you to generate temporary email addresses and check for new messages using the A Temp Mail API. It is designed to work seamlessly with Termux on Android devices.
 
 ## Features
 - Generate temporary email addresses
