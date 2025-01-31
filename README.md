@@ -12,11 +12,14 @@ Open Termux and clone the repository using the following command:
 ```sh
 git clone https://github.com/Lucifurge/Pyeul-Mails-Termux-Tool
 
+cd Pyeul-Mails-Termux-Tool
+
 ## Requirements
 
 pip install requests
 pip install pystyle
 pip install colorama
+
 
 Run 
 Python Main.py
