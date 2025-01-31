@@ -1,3 +1,4 @@
+
 import requests
 import time
 import json
@@ -8,12 +9,13 @@ from colorama import Fore, init
 init(autoreset=True)
 
 Write.Print(r"""
-█████  █   █  ████  █   █  █      ███   ██  █████  ███  █    ████
-█    █  █  █  █     █   █  █      █  ███ █  █   █   █   █    ██
-█████    █    ███   █   █  █      █      █  █████   █   █      ██
-█       █     ███    ███   ████   █      █  █   █  ███  ███  ████
+█████ █   █ ████ █   █  █    ███   ██  █████  ███  █    ████
+█    █ █  █ █    █   █  █    █  ███ █  █   █   █   █    ██
+█████   █   ██   █   █  █    █      █  █████   █   █      ██
+█      █    ███   ███   ████ █      █  █   █  ███  ███  ████
 
 \n\n[1] Generate Mail
+[2] Exit
 """, Colors.blue_to_white, interval=0.0001)
 
 # Guerrilla Mail API base URL
@@ -69,6 +71,7 @@ def generate_mail():
         print(Fore.RED + "[!] Failed to generate email. Please try again.")
         return
 
+    print(Fore.YELLOW + f"[!] Your email address is {email_address}")
     print(Fore.YELLOW + "[!] Waiting for messages...")
     time.sleep(2)
 
@@ -101,6 +104,13 @@ def generate_mail():
             else:
                 print(Fore.YELLOW + "[!] No new messages yet. Checking again in 10 seconds...")
                 time.sleep(10)
+
+            # Check for user command every few cycles
+            if time.time() % 30 < 10:
+                command = Write.Input(Fore.YELLOW + "Type 'exit' to stop checking for messages: ", Colors.blue_to_white).strip().lower()
+                if command == 'exit':
+                    print(Fore.GREEN + "Exiting to main menu...")
+                    break
         except requests.exceptions.RequestException as e:
             print(Fore.RED + f"[!] Error: {e}")
             break
@@ -108,8 +118,12 @@ def generate_mail():
             print(Fore.RED + f"[!] JSON Decode Error: {e}")
             break
 
-opc = Write.Input('\nroot@mail>> ', Colors.blue_to_white)
-if opc.strip() == '1':
-    generate_mail()
-else:
-    print(Fore.RED + "Invalid option!")
+while True:
+    opc = Write.Input('\nroot@mail>> ', Colors.blue_to_white)
+    if opc.strip() == '1':
+        generate_mail()
+    elif opc.strip() == '2':
+        print(Fore.GREEN + "Exiting...")
+        break
+    else:
+        print(Fore.RED + "Invalid option!")
