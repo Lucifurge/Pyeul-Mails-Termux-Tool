@@ -5,7 +5,7 @@ import html
 from pystyle import Write, Colors
 from colorama import Fore, init
 
-init(autoreset=True))
+init(autoreset=True)
 
 Write.Print(r"""
 █████ █   █ ████ █   █  █    ███   ██  █████  ███  █    ████
@@ -24,7 +24,6 @@ def get_email_address(session):
     response = session.get(BASE_URL, params=params, timeout=10)
     response.raise_for_status()
     data = response.json()
-    print(Fore.BLUE + f"DEBUG: get_email_address response -> {data}")
     return data.get("email_addr", ""), data.get("sid_token", "")
 
 def check_email(session, sid_token, seq):
@@ -32,7 +31,6 @@ def check_email(session, sid_token, seq):
     response = session.get(BASE_URL, params=params, timeout=10)
     response.raise_for_status()
     data = response.json()
-    print(Fore.BLUE + f"DEBUG: check_email response -> {data}")
     return data.get("list", []), data.get("seq", seq)
 
 def fetch_email(session, mail_id, sid_token):
@@ -40,7 +38,6 @@ def fetch_email(session, mail_id, sid_token):
     response = session.get(BASE_URL, params=params, timeout=10)
     response.raise_for_status()
     data = response.json()
-    print(Fore.BLUE + f"DEBUG: fetch_email response -> {data}")
     return html.unescape(data.get('mail_body', 'No content'))
 
 def generate_mail():
@@ -58,7 +55,7 @@ def generate_mail():
 
     print(Fore.YELLOW + "[!] Waiting for messages... (This may take a few minutes)")
     seq = 0
-    time.sleep(5)
+    start_time = time.time()
 
     while True:
         messages, seq = check_email(session, sid_token, seq)
@@ -75,17 +72,36 @@ def generate_mail():
                 mail_content = fetch_email(session, mail_id, sid_token)
                 print(Fore.WHITE + mail_content)
                 
-                # Wait for the next check without returning to the root menu
                 time.sleep(2)
         else:
             print(Fore.YELLOW + "[!] No new messages yet. Checking again in 15 seconds...")
             time.sleep(15)  # Recheck every 15 seconds
+        
+        # Check if 50 seconds have passed and show the exit prompt
+        elapsed_time = time.time() - start_time
+        if elapsed_time >= 50:
+            if exit_prompt():
+                break
+            else:
+                start_time = time.time()  # Reset the timer after prompt
+
+def exit_prompt():
+    opc = Write.Input('\nWould you like to exit? (y/n): ', Colors.blue_to_white)
+    if opc.strip().lower() == 'y':
+        print(Fore.GREEN + "Exiting...")
+        return True
+    elif opc.strip().lower() == 'n':
+        print(Fore.YELLOW + "Continuing to check for messages...")
+        return False
+    else:
+        print(Fore.RED + "Invalid input! Please type 'y' for Yes or 'n' for No.")
+        return exit_prompt()
 
 while True:
     opc = Write.Input('\nroot@mail>> ', Colors.blue_to_white)
     if opc.strip() == '1':
         generate_mail()  # Generate mail and wait for new messages
-    elif opc.strip() == '2':
+    elif opc.strip().lower() == '2' or opc.strip().lower() == 'exit':
         print(Fore.GREEN + "Exiting...")
         break
     else:
